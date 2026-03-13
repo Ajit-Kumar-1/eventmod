@@ -1,7 +1,7 @@
 import fs from 'fs';
 import type { User } from '../../data/Types.ts';
 
-export default function loginHandler(
+export default function handler(
   req: Record<string, any>,
   res: any,
 ) {

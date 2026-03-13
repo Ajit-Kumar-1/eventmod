@@ -15,7 +15,7 @@ export const Status = {
 export type Status = typeof Status[keyof typeof Status];
 
 export type Event = {
-  id: number;
+  event_id: number;
   region: Region;
   status: Status;
   claimedAt: Date | null;
