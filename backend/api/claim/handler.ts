@@ -5,7 +5,7 @@ export default function handler(
   req: Record<string, any>,
   res: any,
 ) {
-  const { user_id, event_id } = req.query;
+  const { user_id, event_id } = req.body;
 
   if (!event_id) {
     return res.status(400).json({ error: 'Event ID query parameter is required' });
@@ -41,6 +41,14 @@ export default function handler(
         }
         event.claimedAt = new Date();
         event.claimedBy = user_id;
+        event.status = Status.CLAIMED;
+        fs.writeFile('./data/events.json', JSON.stringify(events, null, 2), (err) => {
+          fs.close(0);
+          if (err) {
+            return res.status(500).json({ error: 'Failed to update event data' });
+          }
+          return res.status(200).json({ message: 'Event claimed successfully', event });
+        });
       });
     } else {
       return res.status(401).json({ error: 'Invalid credentials' });
