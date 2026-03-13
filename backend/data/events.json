@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "region": "eu",
+    "status": "open",
+    "claimedAt": null,
+    "claimedBy": null
+  },
+  {
+    "id": 2,
+    "region": "eu",
+    "status": "claimed",
+    "claimedAt": "2024-06-01T12:00:00Z",
+    "claimedBy": "eu_mod_1"
+  },
+  {
+    "id": 3,
+    "region": "us",
+    "status": "open",
+    "claimedAt": null,
+    "claimedBy": null
+  },
+  {
+    "id": 4,
+    "region": "us",
+    "status": "claimed",
+    "claimedAt": "2024-06-02T15:30:00Z",
+    "claimedBy": "us_mod_2"
+  },
+  {
+    "id": 5,
+    "region": "asia",
+    "status": "open",
+    "claimedAt": null,
+    "claimedBy": null
+  },
+  {
+    "id": 6,
+    "region": "asia",
+    "status": "claimed",
+    "claimedAt": "2024-06-03T10:45:00Z",
+    "claimedBy": "asia_mod_1"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "user_id": "eu_mod_1",
+    "region": "eu"
+  },
+  {
+    "user_id": "eu_mod_2",
+    "region": "eu"
+  },
+  {
+    "user_id": "us_mod_1",
+    "region": "us"
+  },
+  {
+    "user_id": "us_mod_2",
+    "region": "us"
+  },
+  {
+    "user_id": "asia_mod_1",
+    "region": "asia"
+  },
+  {
+    "user_id": "asia_mod_2",
+    "region": "asia"
+  }
+]
