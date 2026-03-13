@@ -21,3 +21,8 @@ export type Event = {
   claimedAt: Date | null;
   claimedBy: string | null;
 }
+
+export type User = {
+  user_id: string;
+  region: Region;
+}

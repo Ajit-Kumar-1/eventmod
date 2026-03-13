@@ -1,7 +1,7 @@
 import express from 'express';
 const app = express()
 import fs from 'fs';
-import { Status, type Event } from './data/Types.ts';
+import { Status, type Event, type User } from './data/Types.ts';
 const port = 3000
 
 app.use(express.json())
@@ -14,8 +14,8 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ error: 'Failed to load users data' });
     }
 
-    const users = JSON.parse(data);
-    const user = users.find((u: any) => u.user_id === user_id && u.region === region);
+    const users: User[] = JSON.parse(data);
+    const user = users.find((u: User) => u.user_id === user_id && u.region === region);
 
     if (user) {
       res.json({ success: true, message: 'Login successful' });
