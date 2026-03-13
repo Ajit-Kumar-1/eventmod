@@ -32,8 +32,9 @@ export default function handler(
         const event: Event | undefined = events.find((e: Event) => e.region === region
           && e.event_id === event_id
           && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED && e.claimedAt instanceof Date
-              && (new Date().valueOf() - e.claimedAt.valueOf()) >= 15 * 60 * 1000)
+            || (e.status === Status.CLAIMED
+              && (!(e.claimedAt instanceof Date)
+                || (new Date().valueOf() - new Date(e.claimedAt).valueOf()) >= 15 * 60 * 1000))
           )
         );
         if (!event) {

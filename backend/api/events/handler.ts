@@ -37,9 +37,12 @@ export default function handler(
             || (e.status === Status.CLAIMED
               && !(e.claimedBy !== user_id
                 && e.claimedAt instanceof Date
-                && new Date().valueOf() - new Date(e.claimedAt).valueOf() < 15 * 60 * 1000))
+                && (new Date().valueOf() - new Date(e.claimedAt).valueOf())
+                < 15 * 60 * 1000))
             || (e.status === Status.LOCKED && e.claimedBy === user_id)
           ));
+
+      fs.close(0);
       res.json(filteredEvents);
     });
   });
