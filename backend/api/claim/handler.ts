@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { Region, Status, type Event, type User } from '../../data/Types.ts';
+import { claimedBySomeoneElse } from '../Utils.ts';
 
 export default function handler(
   req: Record<string, any>,
@@ -32,11 +33,7 @@ export default function handler(
         const event: Event | undefined = events.find((e: Event) => e.region === region
           && e.event_id === event_id
           && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED
-              && (!e.claimedAt
-                || (new Date().getTime() - new Date(e.claimedAt).getTime()) >= 15 * 60 * 1000))
-          )
-        );
+            || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))));
         if (!event) {
           return res.status(400).json({ error: 'No valid event found with specified id' });
         }

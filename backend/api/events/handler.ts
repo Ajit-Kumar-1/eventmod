@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { Status, type Event, type User } from '../../data/Types.ts';
+import { claimedBySomeoneElse } from '../Utils.ts';
 
 export default function handler(
   req: Record<string, any>,
@@ -34,11 +35,7 @@ export default function handler(
       const filteredEvents: Event[] = events
         .filter((e: Event) => e.region === region
           && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED
-              && !(e.claimedBy !== user_id
-                && e.claimedAt
-                && (new Date().getTime() - new Date(e.claimedAt).getTime())
-                < 15 * 60 * 1000))
+            || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))
             || (e.status === Status.LOCKED && e.claimedBy === user_id)
           ));
       res.json(filteredEvents);
