@@ -33,8 +33,8 @@ export default function handler(
           && e.event_id === event_id
           && (e.status === Status.OPEN
             || (e.status === Status.CLAIMED
-              && (!(e.claimedAt instanceof Date)
-                || (new Date().valueOf() - new Date(e.claimedAt).valueOf()) >= 15 * 60 * 1000))
+              && (!e.claimedAt
+                || (new Date().getTime() - new Date(e.claimedAt).getTime()) >= 15 * 60 * 1000))
           )
         );
         if (!event) {
@@ -44,7 +44,6 @@ export default function handler(
         event.claimedBy = user_id;
         event.status = Status.CLAIMED;
         fs.writeFile('./data/events.json', JSON.stringify(events, null, 2), (err) => {
-          fs.close(0);
           if (err) {
             return res.status(500).json({ error: 'Failed to update event data' });
           }
