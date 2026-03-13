@@ -9,8 +9,8 @@
   {
     "id": 2,
     "region": "eu",
-    "status": "claimed",
-    "claimedAt": "2024-06-01T12:00:00Z",
+    "status": "open",
+    "claimedAt": "2026-06-01T12:00:00Z",
     "claimedBy": "eu_mod_1"
   },
   {
@@ -23,7 +23,7 @@
   {
     "id": 4,
     "region": "us",
-    "status": "claimed",
+    "status": "open",
     "claimedAt": "2024-06-02T15:30:00Z",
     "claimedBy": "us_mod_2"
   },
@@ -37,7 +37,7 @@
   {
     "id": 6,
     "region": "asia",
-    "status": "claimed",
+    "status": "open",
     "claimedAt": "2024-06-03T10:45:00Z",
     "claimedBy": "asia_mod_1"
   }
