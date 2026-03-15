@@ -25,7 +25,7 @@ export default function handler(
     const user: User | undefined = users.find((u: any) => u.user_id === user_id);
 
     if (!user) {
-      return unauthorizedResponse(res, 'Invalid credentials');
+      return unauthorizedResponse(res, 'User not found');
     }
 
     const region: Region = user.region;

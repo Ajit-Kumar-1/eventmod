@@ -24,34 +24,33 @@ export default function handler(
     const users: User[] = JSON.parse(userData);
     const user: User | undefined = users.find((u: any) => u.user_id === user_id);
 
-    if (user) {
-      const region: Region = user.region;
-      fs.readFile('./data/events.json', 'utf8', (err, eventData) => {
-        if (err) {
-          return serverError(res, 'Failed to load events data');
-        }
-        const events: Event[] = JSON.parse(eventData);
-        const event: Event | undefined = events.find((e: Event) => e.region === region
-          && e.eventId === event_id && e.status === Status.CLAIMED
-          && claimedByMe(e, user_id));
-
-        if (!event) {
-          return clientError(res, 'No valid event found with specified id');
-        }
-
-        event.claimedAt = new Date();
-        event.claimedBy = user_id;
-        event.status = Status.ASSIGNED;
-        fs.writeFile('./data/events.json', JSON.stringify(events, null, 2), (err) => {
-          if (err) {
-            return serverError(res, 'Failed to update event data');
-          }
-          return successResponse(res, 'Event assigned successfully');
-        });
-      });
-    } else {
-      return unauthorizedResponse(res);
+    if (!user) {
+      return unauthorizedResponse(res, 'User not found');
     }
-  });
 
+    const region: Region = user.region;
+    fs.readFile('./data/events.json', 'utf8', (err, eventData) => {
+      if (err) {
+        return serverError(res, 'Failed to load events data');
+      }
+      const events: Event[] = JSON.parse(eventData);
+      const event: Event | undefined = events.find((e: Event) => e.region === region
+        && e.eventId === event_id && e.status === Status.CLAIMED
+        && claimedByMe(e, user_id));
+
+      if (!event) {
+        return clientError(res, 'No valid event found with specified id');
+      }
+
+      event.claimedAt = new Date();
+      event.claimedBy = user_id;
+      event.status = Status.ASSIGNED;
+      fs.writeFile('./data/events.json', JSON.stringify(events, null, 2), (err) => {
+        if (err) {
+          return serverError(res, 'Failed to update event data');
+        }
+        return successResponse(res, 'Event assigned successfully');
+      });
+    });
+  });
 }

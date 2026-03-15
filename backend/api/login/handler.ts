@@ -26,7 +26,7 @@ export default function handler(
     const user = users.find((u: User) => u.userId === user_id && u.region === region);
 
     if (!user) {
-      return unauthorizedResponse(res, "Invalid credentials");
+      return unauthorizedResponse(res, 'User not found in specified region');
     }
 
     return successResponse(res, 'Login successful');

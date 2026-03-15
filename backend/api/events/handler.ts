@@ -22,7 +22,7 @@ export default function handler(
     const user = users.find((u: User) => u.userId === user_id);
 
     if (!user) {
-      return unauthorizedResponse(res, 'Invalid credentials');
+      return unauthorizedResponse(res, 'User not found');
     }
 
     const region: string = user.region;
