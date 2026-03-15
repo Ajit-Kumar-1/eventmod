@@ -34,9 +34,7 @@ export default function handler(
       const events: Event[] = JSON.parse(data);
       const filteredEvents: Event[] = events
         .filter((e: Event) => e.region === region
-          && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))
-          ));
+          && e.status === Status.ASSIGNED && e.claimedBy === user_id);
       res.json(filteredEvents);
     });
   });
