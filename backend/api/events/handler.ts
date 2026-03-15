@@ -1,16 +1,20 @@
 import fs from 'fs';
 import { Status, type Event, type User } from '../../data/Types.ts';
-import { claimedBySomeoneElse } from '../Utils.ts';
+import { claimedByMe, claimedBySomeoneElse, claimValid } from '../Utils.ts';
 import { clientError, serverError, unauthorizedResponse } from '../Middleware.ts';
 
 export default function handler(
   req: Record<string, any>,
   res: any,
 ) {
-  const { userId } = req.query;
+  const { userId, status } = req.query;
 
   if (!userId) {
     return clientError(res, 'User ID query parameter is required');
+  }
+
+  if (!status) {
+    return clientError(res, 'Status query parameter is required');
   }
 
   fs.readFile('./data/users.json', 'utf8', (err, data) => {
@@ -32,13 +36,25 @@ export default function handler(
         return serverError(res, 'Failed to load events data');
       }
 
-      const events: Event[] = JSON.parse(data);
-      const filteredEvents: Event[] = events
-        .filter((e: Event) => e.region === region
+      let events: Event[] = JSON.parse(data);
+
+      if (status === Status.OPEN) {
+        return res.json(events.filter((e: Event) => e.region === region
           && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, userId))
-          ));
-      return res.json(filteredEvents);
+            || (e.status === Status.CLAIMED && !claimValid(e)))));
+      }
+
+      if (status === Status.CLAIMED) {
+        return res.json(events.filter((e: Event) => e.region === region
+          && e.status === Status.CLAIMED && claimedByMe(e, userId)));
+      }
+
+      if (status === Status.ASSIGNED) {
+        return res.json(events.filter((e: Event) => e.region === region
+          && e.status === Status.ASSIGNED && claimedByMe(e, userId)));
+      }
+
+      return clientError(res, 'Invalid status query parameter');
     });
   });
 
