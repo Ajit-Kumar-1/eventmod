@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Region, Status, type Event, type User } from '../../data/Types.ts';
 import { claimedByMe } from '../Utils.ts';
-import { clientError, serverError } from '../Middleware.ts';
+import { clientError, serverError, successResponse, unauthorizedResponse } from '../Middleware.ts';
 
 export default function handler(
   req: Record<string, any>,
@@ -34,9 +34,11 @@ export default function handler(
         const event: Event | undefined = events.find((e: Event) => e.region === region
           && e.eventId === event_id && e.status === Status.CLAIMED
           && claimedByMe(e, user_id));
+
         if (!event) {
           return clientError(res, 'No valid event found with specified id');
         }
+
         event.claimedAt = new Date();
         event.claimedBy = user_id;
         event.status = Status.ASSIGNED;
@@ -44,11 +46,11 @@ export default function handler(
           if (err) {
             return serverError(res, 'Failed to update event data');
           }
-          return res.status(200).json({ message: 'Event assigned successfully', event });
+          return successResponse(res, 'Event assigned successfully');
         });
       });
     } else {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return unauthorizedResponse(res);
     }
   });
 

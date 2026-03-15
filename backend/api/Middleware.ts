@@ -11,5 +11,5 @@ export function successResponse(res: any, message?: string) {
 }
 
 export function unauthorizedResponse(res: any, message?: string) {
-  return res.status(401).json({ message: message ?? 'Unauthorized' });
+  return res.status(401).json({ message: message ?? 'Request unauthorized' });
 }
