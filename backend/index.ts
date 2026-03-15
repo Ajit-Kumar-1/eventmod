@@ -1,5 +1,5 @@
 import express from 'express';
-import Routes from './api/index.ts';
+import Routes from './src/api/index.ts';
 import cron from 'node-cron';
 import type { Route } from './src/Types.ts';
 import resetExpired from './src/cron/ResetExpiredHandler.ts';
