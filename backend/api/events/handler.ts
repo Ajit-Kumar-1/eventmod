@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { Status, type Event, type User } from '../../data/Types.ts';
 import { claimedBySomeoneElse } from '../Utils.ts';
+import { clientError, serverError, unauthorizedResponse } from '../Middleware.ts';
 
 export default function handler(
   req: Record<string, any>,
@@ -9,26 +10,26 @@ export default function handler(
   const { user_id } = req.query;
 
   if (!user_id) {
-    return res.status(400).json({ error: 'User ID query parameter is required' });
+    return clientError(res, 'User ID query parameter is required');
   }
 
   fs.readFile('./data/users.json', 'utf8', (err, data) => {
     if (err) {
-      return res.status(500).json({ error: 'Failed to load users data' });
+      return serverError(res, 'Failed to load users data');
     }
 
     const users: User[] = JSON.parse(data);
     const user = users.find((u: User) => u.userId === user_id);
 
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return unauthorizedResponse(res, 'Invalid credentials');
     }
 
     const region: string = user.region;
 
     fs.readFile('./data/events.json', 'utf8', (err, data) => {
       if (err) {
-        return res.status(500).json({ error: 'Failed to load events data' });
+        return serverError(res, 'Failed to load events data');
       }
 
       const events: Event[] = JSON.parse(data);
@@ -37,7 +38,7 @@ export default function handler(
           && (e.status === Status.OPEN
             || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))
           ));
-      res.json(filteredEvents);
+      return res.json(filteredEvents);
     });
   });
 

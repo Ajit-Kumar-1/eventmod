@@ -1,5 +1,6 @@
 import fs from 'fs';
 import type { User } from '../../data/Types.ts';
+import { clientError, serverError, successResponse, unauthorizedResponse } from '../Middleware.ts';
 
 const usersFilePath = './data/users.json';
 
@@ -9,19 +10,25 @@ export default function handler(
 ) {
   const { user_id, region } = req.body;
 
+  if (!user_id) {
+    return clientError(res, 'User ID query parameter is required');
+  }
+  if (!region) {
+    return clientError(res, 'Region query parameter is required');
+  }
+
   fs.readFile(usersFilePath, 'utf8', (err, data) => {
     if (err) {
-      return res.status(500).json({ error: 'Failed to load users data' });
+      return serverError(res, 'Failed to load users data');
     }
 
     const users: User[] = JSON.parse(data);
     const user = users.find((u: User) => u.userId === user_id && u.region === region);
 
-    res.header("Access-Control-Allow-Origin", '*');
-    if (user) {
-      res.json({ success: true, message: 'Login successful' });
-    } else {
-      res.status(401).json({ success: false, message: 'Invalid credentials' });
+    if (!user) {
+      return unauthorizedResponse(res, "Invalid credentials");
     }
+
+    return successResponse(res, 'Login successful');
   });
 }
