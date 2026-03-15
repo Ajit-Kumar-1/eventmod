@@ -5,10 +5,10 @@ import type { Route } from './src/Types.ts';
 import resetExpired from './src/cron/ResetExpiredHandler.ts';
 import corsMiddleware from './src/api/Middleware.ts';
 
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
-app.use(express.json())
+app.use(express.json());
 app.use(corsMiddleware);
 
 Routes.forEach((route: Route) => app[route.method](route.path, route.handler));
