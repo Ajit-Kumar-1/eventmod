@@ -4,6 +4,6 @@ export default function login(userId: string, region: string) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ user_id: userId, region })
+    body: JSON.stringify({ userId, region })
   }).then(response => response.json())
 };

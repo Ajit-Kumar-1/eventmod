@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import login from './requests/Login';
-import { getEvents } from './requests/GetEvents';
+import login from './requests/Login.ts';
+import { getOpenEvents } from './requests/GetOpenEvents.ts';
 import { getAssignments } from './requests/GetAssignments.js';
 
 type EventItem = {
@@ -16,25 +16,20 @@ function App() {
   const [userId, setUserId] = useState<string>('')
   const [region, setRegion] = useState<string>('')
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
-  const [events, setEvents] = useState<EventItem[]>([]);
+  const [openEvents, setOpenEvents] = useState<EventItem[]>([]);
   const [assignedEvents, setAssignedEvents] = useState<EventItem[]>([]);
 
   const handleSubmit = () => {
-    login(userId, region).then((response: { success: boolean }) => {
-      if (response.success) {
-        setLoggedIn(true);
-      }
+    login(userId, region).then(() => {
+      setLoggedIn(true);
     });
   };
 
   const fetchEvents = () => {
-    getEvents(userId).then((response) => {
-      setEvents(Array.isArray(response) ? response : []);
+    getOpenEvents(userId).then((response: EventItem[]) => {
+      setOpenEvents(Array.isArray(response) ? response : []);
     });
-  };
-
-  const fetchAssignedEvents = () => {
-    getAssignments(userId).then((response) => {
+    getAssignments(userId).then((response: EventItem[]) => {
       setAssignedEvents(Array.isArray(response) ? response : []);
     });
   };
@@ -49,7 +44,7 @@ function App() {
           >
             Fetch events
           </button>
-          {events.length > 0 ? (
+          {openEvents.length > 0 ? (
             <>
               <h3>Available Events</h3>
               <table className="events-table">
@@ -62,7 +57,7 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {events.map((event) => (
+                  {openEvents.map((event) => (
                     <tr key={event.eventId}>
                       <td>{event.eventId}</td>
                       <td>{event.region}</td>
