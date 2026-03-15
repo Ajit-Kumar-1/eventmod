@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { claimedByMe, claimValid } from './Utils.ts';
+import { claimedByMe, claimValid } from '../Utils.ts';
 import { Status, type Event } from '../Types.ts';
 
 const buildEvent = (overrides: Partial<Event> = {}): Event => ({

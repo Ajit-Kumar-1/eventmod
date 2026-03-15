@@ -1,4 +1,4 @@
-import type { Event } from "../Types.ts";
+import type { Event } from './Types.ts';
 
 export const claimValid = (event: Event): boolean => !!event?.claimedAt
   && new Date().getTime() - new Date(event.claimedAt).getTime() < 15 * 60 * 1000;

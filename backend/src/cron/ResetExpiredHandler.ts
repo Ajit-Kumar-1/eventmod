@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Status, type Event } from '../Types.ts';
-import { claimValid } from './Utils.ts';
+import { claimValid } from '../Utils.ts';
 
 export default function resetExpired() {
   fs.readFile('./data/events.json', 'utf8', (err, eventData) => {
