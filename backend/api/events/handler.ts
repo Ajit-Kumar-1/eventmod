@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Status, type Event, type User } from '../../data/Types.ts';
-import { claimedByMe, claimedBySomeoneElse, claimValid } from '../Utils.ts';
+import { claimedByMe, claimValid } from '../Utils.ts';
 import { clientError, serverError, unauthorizedResponse } from '../Middleware.ts';
 
 export default function handler(

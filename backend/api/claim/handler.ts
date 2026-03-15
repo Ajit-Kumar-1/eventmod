@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Region, Status, type Event, type User } from '../../data/Types.ts';
-import { claimedBySomeoneElse } from '../Utils.ts';
+import { claimValid } from '../Utils.ts';
 import { clientError, serverError, successResponse, unauthorizedResponse } from '../Middleware.ts';
 
 export default function handler(
@@ -38,7 +38,7 @@ export default function handler(
       const event: Event | undefined = events.find((e: Event) => e.region === region
         && e.eventId === eventId
         && (e.status === Status.OPEN
-          || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, userId))));
+          || (e.status === Status.CLAIMED && !claimValid(e))));
 
       if (!event) {
         return clientError(res, 'No valid event found with specified id');
