@@ -83,6 +83,16 @@
   background: var(--accent-bg);
 }
 
+.row-action {
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--text-h);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
 .ticks {
   position: relative;
   width: 100%;

@@ -50,6 +50,7 @@ function App() {
                   <th>Status</th>
                   <th>Claimed By</th>
                   <th>Claimed At</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -60,6 +61,11 @@ function App() {
                     <td>{event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}</td>
                     <td>{event.claimedBy ?? '-'}</td>
                     <td>{event.claimedAt ?? '-'}</td>
+                    <td>
+                      <button className="row-action" type="button">
+                        {event.status === 'open' && 'Claim'}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
