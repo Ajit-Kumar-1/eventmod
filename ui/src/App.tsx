@@ -1,18 +1,40 @@
 import React, { useState } from 'react'
 import './App.css'
+import login from './requests/Login.js';
+import { getEvents } from './requests/GetEvents.js';
 
 function App() {
   const [userId, setUserId] = useState<string>('')
   const [region, setRegion] = useState<string>('')
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [events, setEvents] = useState<any[]>([]);
 
   const handleSubmit = () => {
-    console.log({ user_id: userId, region })
-  }
+    login(userId, region).then((response) => {
+      if (response.success) {
+        setLoggedIn(true);
+      }
+    });
+  };
+
+  const fetchEvents = () => {
+    getEvents(userId).then((response) => {
+      setEvents(response);
+    });
+  };
 
   return (
     <>
-      <section id="center">
+      {loggedIn ? <section id="center">
+        <div>
+          <button
+            className="counter"
+            onClick={fetchEvents}
+          >
+            Fetch events
+          </button>
+        </div>
+      </section> : <section id="center">
         <div>
           <h2>Get started</h2>
           <p>Enter your moderator details below.</p>
@@ -48,7 +70,7 @@ function App() {
         >
           Submit
         </button>
-      </section>
+      </section>}
 
       <div className="ticks"></div>
     </>
