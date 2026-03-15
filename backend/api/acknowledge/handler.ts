@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Region, Status, type Event, type User } from '../../data/Types.ts';
-import { claimedBySomeoneElse } from '../Utils.ts';
+import { claimedByMe } from '../Utils.ts';
 
 export default function handler(
   req: Record<string, any>,
@@ -31,20 +31,19 @@ export default function handler(
         }
         const events: Event[] = JSON.parse(eventData);
         const event: Event | undefined = events.find((e: Event) => e.region === region
-          && e.event_id === event_id
-          && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))));
+          && e.event_id === event_id && e.status === Status.CLAIMED
+          && claimedByMe(e, user_id));
         if (!event) {
           return res.status(400).json({ error: 'No valid event found with specified id' });
         }
         event.claimedAt = new Date();
         event.claimedBy = user_id;
-        event.status = Status.CLAIMED;
+        event.status = Status.ASSIGNED;
         fs.writeFile('./data/events.json', JSON.stringify(events, null, 2), (err) => {
           if (err) {
             return res.status(500).json({ error: 'Failed to update event data' });
           }
-          return res.status(200).json({ message: 'Event claimed successfully', event });
+          return res.status(200).json({ message: 'Event assigned successfully', event });
         });
       });
     } else {

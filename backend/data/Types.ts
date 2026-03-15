@@ -9,7 +9,7 @@ export type Region = typeof Region[keyof typeof Region];
 export const Status = {
   OPEN: 'open',
   CLAIMED: 'claimed',
-  LOCKED: 'locked'
+  ASSIGNED: 'assigned'
 } as const;
 
 export type Status = typeof Status[keyof typeof Status];

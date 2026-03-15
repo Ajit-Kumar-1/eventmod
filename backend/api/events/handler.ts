@@ -36,7 +36,7 @@ export default function handler(
         .filter((e: Event) => e.region === region
           && (e.status === Status.OPEN
             || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))
-            || (e.status === Status.LOCKED && e.claimedBy === user_id)
+            || (e.status === Status.ASSIGNED && e.claimedBy === user_id)
           ));
       res.json(filteredEvents);
     });
