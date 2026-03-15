@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import login from './requests/Login';
 import { getEvents } from './requests/GetEvents';
+import { getAssignments } from './requests/GetAssignments.js';
 
 type EventItem = {
   eventId: string;
@@ -16,6 +17,7 @@ function App() {
   const [region, setRegion] = useState<string>('')
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [assignedEvents, setAssignedEvents] = useState<EventItem[]>([]);
 
   const handleSubmit = () => {
     login(userId, region).then((response: { success: boolean }) => {
@@ -28,6 +30,12 @@ function App() {
   const fetchEvents = () => {
     getEvents(userId).then((response) => {
       setEvents(Array.isArray(response) ? response : []);
+    });
+  };
+
+  const fetchAssignedEvents = () => {
+    getAssignments(userId).then((response) => {
+      setAssignedEvents(Array.isArray(response) ? response : []);
     });
   };
 
@@ -50,8 +58,6 @@ function App() {
                     <th>Event ID</th>
                     <th>Region</th>
                     <th>Status</th>
-                    <th>Claimed By</th>
-                    <th>Claimed At</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -61,8 +67,6 @@ function App() {
                       <td>{event.eventId}</td>
                       <td>{event.region}</td>
                       <td>{event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}</td>
-                      <td>{event.claimedBy ?? '-'}</td>
-                      <td>{event.claimedAt ?? '-'}</td>
                       <td>
                         <button className="row-action" type="button">
                           {event.status === 'open' && 'Claim'}
@@ -70,6 +74,32 @@ function App() {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+
+              <h3>Assigned Events</h3>
+              <table className="events-table">
+                <thead>
+                  <tr>
+                    <th>Event ID</th>
+                    <th>Region</th>
+                    <th>Claimed At</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {assignedEvents.length > 0 ? (
+                    assignedEvents.map((event) => (
+                      <tr key={`assigned-${event.eventId}`}>
+                        <td>{event.eventId}</td>
+                        <td>{event.region}</td>
+                        <td>{event.claimedAt}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3}>No assigned events yet.</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </>
