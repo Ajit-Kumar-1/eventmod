@@ -1,6 +1,6 @@
 FROM node
-WORKDIR /app
-COPY backend/package.json /app
+WORKDIR /app/backend
+COPY backend/package.json /app/backend
 RUN npm install
 COPY . /app
-CMD ["node", "backend/index.ts"]
+CMD ["node", "index.ts"]
