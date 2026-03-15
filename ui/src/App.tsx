@@ -1,16 +1,24 @@
 import React, { useState } from 'react'
 import './App.css'
-import login from './requests/Login.js';
-import { getEvents } from './requests/GetEvents.js';
+import login from './requests/Login';
+import { getEvents } from './requests/GetEvents';
+
+type EventItem = {
+  eventId: string;
+  region: string;
+  status: string;
+  claimedBy: string | null;
+  claimedAt: string | null;
+};
 
 function App() {
   const [userId, setUserId] = useState<string>('')
   const [region, setRegion] = useState<string>('')
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
 
   const handleSubmit = () => {
-    login(userId, region).then((response) => {
+    login(userId, region).then((response: { success: boolean }) => {
       if (response.success) {
         setLoggedIn(true);
       }
@@ -19,7 +27,7 @@ function App() {
 
   const fetchEvents = () => {
     getEvents(userId).then((response) => {
-      setEvents(response);
+      setEvents(Array.isArray(response) ? response : []);
     });
   };
 
@@ -33,7 +41,32 @@ function App() {
           >
             Fetch events
           </button>
-          {events?.map((event) => <div key={event.id}>{event.eventId}</div>)}
+          {events.length > 0 ? (
+            <table className="events-table">
+              <thead>
+                <tr>
+                  <th>Event ID</th>
+                  <th>Region</th>
+                  <th>Status</th>
+                  <th>Claimed By</th>
+                  <th>Claimed At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((event) => (
+                  <tr key={event.eventId}>
+                    <td>{event.eventId}</td>
+                    <td>{event.region}</td>
+                    <td>{event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}</td>
+                    <td>{event.claimedBy ?? '-'}</td>
+                    <td>{event.claimedAt ?? '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No events loaded yet.</p>
+          )}
         </div>
       </section> : <section id="center">
         <div>

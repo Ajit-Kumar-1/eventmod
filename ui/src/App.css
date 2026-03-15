@@ -65,6 +65,24 @@
   outline-offset: 1px;
 }
 
+.events-table {
+  width: min(900px, 92vw);
+  border-collapse: collapse;
+  margin-top: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.events-table th,
+.events-table td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+}
+
+.events-table thead {
+  background: var(--accent-bg);
+}
+
 .ticks {
   position: relative;
   width: 100%;
