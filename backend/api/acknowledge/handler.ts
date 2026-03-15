@@ -31,7 +31,7 @@ export default function handler(
         }
         const events: Event[] = JSON.parse(eventData);
         const event: Event | undefined = events.find((e: Event) => e.region === region
-          && e.event_id === event_id && e.status === Status.CLAIMED
+          && e.eventId === event_id && e.status === Status.CLAIMED
           && claimedByMe(e, user_id));
         if (!event) {
           return res.status(400).json({ error: 'No valid event found with specified id' });

@@ -31,7 +31,7 @@ export default function handler(
         }
         const events: Event[] = JSON.parse(eventData);
         const event: Event | undefined = events.find((e: Event) => e.region === region
-          && e.event_id === event_id
+          && e.eventId === event_id
           && (e.status === Status.OPEN
             || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))));
         if (!event) {

@@ -33,6 +33,7 @@ function App() {
           >
             Fetch events
           </button>
+          {events?.map((event) => <div key={event.id}>{event.eventId}</div>)}
         </div>
       </section> : <section id="center">
         <div>

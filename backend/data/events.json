@@ -1,41 +1,41 @@
 [
   {
-    "event_id": "e1",
+    "eventId": "e1",
     "region": "eu",
     "status": "assigned",
     "claimedAt": "2026-03-15T15:20:34.413Z",
     "claimedBy": "eu_mod_1"
   },
   {
-    "event_id": "e2",
+    "eventId": "e2",
     "region": "eu",
     "status": "open",
     "claimedAt": "2026-06-01T12:00:00Z",
     "claimedBy": "eu_mod_1"
   },
   {
-    "event_id": "e3",
+    "eventId": "e3",
     "region": "us",
     "status": "open",
     "claimedAt": null,
     "claimedBy": null
   },
   {
-    "event_id": "e4",
+    "eventId": "e4",
     "region": "us",
     "status": "open",
     "claimedAt": "2024-06-02T15:30:00Z",
     "claimedBy": "us_mod_2"
   },
   {
-    "event_id": "e5",
+    "eventId": "e5",
     "region": "asia",
     "status": "open",
     "claimedAt": null,
     "claimedBy": null
   },
   {
-    "event_id": "e6",
+    "eventId": "e6",
     "region": "asia",
     "status": "open",
     "claimedAt": "2024-06-03T10:45:00Z",
