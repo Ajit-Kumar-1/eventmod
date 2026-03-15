@@ -51,7 +51,7 @@ export default function handler(
 
       if (status === Status.ASSIGNED) {
         return res.json(events.filter((e: Event) => e.region === region
-          && e.status === Status.ASSIGNED && claimedByMe(e, userId)));
+          && e.status === Status.ASSIGNED && e.claimedBy === userId));
       }
 
       return clientError(res, 'Invalid status query parameter');
