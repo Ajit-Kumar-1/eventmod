@@ -1,8 +1,9 @@
+import { HTTPMethod } from '../../Types.ts';
 import handler from './handler.ts';
 
 const eventsHandler = {
   path: '/events',
-  method: 'get',
+  method: HTTPMethod.GET,
   handler,
 }
 

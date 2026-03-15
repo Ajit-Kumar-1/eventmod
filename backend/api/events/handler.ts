@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Status, type Event, type User } from '../../data/Types.ts';
+import { Status, type Event, type User } from '../../Types.ts';
 import { claimedByMe, claimValid } from '../Utils.ts';
 import { clientError, serverError, unauthorizedResponse } from '../Middleware.ts';
 

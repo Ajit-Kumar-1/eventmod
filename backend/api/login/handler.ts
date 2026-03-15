@@ -1,5 +1,5 @@
 import fs from 'fs';
-import type { User } from '../../data/Types.ts';
+import type { User } from '../../Types.ts';
 import { clientError, serverError, successResponse, unauthorizedResponse } from '../Middleware.ts';
 
 const usersFilePath = './data/users.json';

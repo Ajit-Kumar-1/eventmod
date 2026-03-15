@@ -1,5 +1,6 @@
 import express from 'express';
-import { loginRoute, eventsRoute, claimRoute, acknowledgeRoute } from './api/index.ts';
+import Routes from './api/index.ts';
+import type { Route } from './Types.ts';
 const app = express()
 const port = 3000
 
@@ -11,12 +12,8 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.post(loginRoute.path, loginRoute.handler)
-app.get(eventsRoute.path, eventsRoute.handler)
-app.put(claimRoute.path, claimRoute.handler)
-app.put(acknowledgeRoute.path, acknowledgeRoute.handler)
-
+Routes.forEach((route: Route) => app[route.method](route.path, route.handler));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Moderation platform backend listening on port ${port}`)
 })

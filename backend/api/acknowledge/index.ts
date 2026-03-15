@@ -1,8 +1,9 @@
+import { HTTPMethod } from '../../Types.ts';
 import handler from './handler.ts';
 
 const acknowledgeHandler = {
   path: '/acknowledge',
-  method: 'put',
+  method: HTTPMethod.PUT,
   handler,
 }
 

@@ -26,3 +26,18 @@ export type User = {
   userId: string;
   region: Region;
 }
+
+export const HTTPMethod = {
+  GET: 'get',
+  POST: 'post',
+  PUT: 'put',
+  DELETE: 'delete'
+} as const;
+
+export type HTTPMethod = typeof HTTPMethod[keyof typeof HTTPMethod];
+
+export type Route = {
+  method: HTTPMethod;
+  path: string;
+  handler: (req: Record<string, any>, res: any) => void;
+}

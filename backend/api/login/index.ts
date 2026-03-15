@@ -1,8 +1,9 @@
+import { HTTPMethod } from '../../Types.ts';
 import handler from './handler.ts';
 
 const loginHandler = {
   path: '/login',
-  method: 'post',
+  method: HTTPMethod.POST,
   handler,
 }
 
