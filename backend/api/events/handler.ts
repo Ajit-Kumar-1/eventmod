@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Status, type Event, type User } from '../../Types.ts';
 import { claimedByMe, claimValid } from '../Utils.ts';
-import { clientError, serverError, unauthorizedResponse } from '../Middleware.ts';
+import { clientError, serverError, unauthorizedResponse } from '../CommonResponses.ts';
 
 export default function handler(
   req: Record<string, any>,

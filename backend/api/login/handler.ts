@@ -1,6 +1,6 @@
 import fs from 'fs';
 import type { User } from '../../Types.ts';
-import { clientError, serverError, successResponse, unauthorizedResponse } from '../Middleware.ts';
+import { clientError, serverError, successResponse, unauthorizedResponse } from '../CommonResponses.ts';
 
 const usersFilePath = './data/users.json';
 
