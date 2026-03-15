@@ -42,34 +42,37 @@ function App() {
             Fetch events
           </button>
           {events.length > 0 ? (
-            <table className="events-table">
-              <thead>
-                <tr>
-                  <th>Event ID</th>
-                  <th>Region</th>
-                  <th>Status</th>
-                  <th>Claimed By</th>
-                  <th>Claimed At</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {events.map((event) => (
-                  <tr key={event.eventId}>
-                    <td>{event.eventId}</td>
-                    <td>{event.region}</td>
-                    <td>{event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}</td>
-                    <td>{event.claimedBy ?? '-'}</td>
-                    <td>{event.claimedAt ?? '-'}</td>
-                    <td>
-                      <button className="row-action" type="button">
-                        {event.status === 'open' && 'Claim'}
-                      </button>
-                    </td>
+            <>
+              <h3>Available Events</h3>
+              <table className="events-table">
+                <thead>
+                  <tr>
+                    <th>Event ID</th>
+                    <th>Region</th>
+                    <th>Status</th>
+                    <th>Claimed By</th>
+                    <th>Claimed At</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {events.map((event) => (
+                    <tr key={event.eventId}>
+                      <td>{event.eventId}</td>
+                      <td>{event.region}</td>
+                      <td>{event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}</td>
+                      <td>{event.claimedBy ?? '-'}</td>
+                      <td>{event.claimedAt ?? '-'}</td>
+                      <td>
+                        <button className="row-action" type="button">
+                          {event.status === 'open' && 'Claim'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           ) : (
             <p>No events loaded yet.</p>
           )}
