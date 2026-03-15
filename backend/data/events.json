@@ -2,8 +2,8 @@
   {
     "event_id": "e1",
     "region": "eu",
-    "status": "claimed",
-    "claimedAt": "2026-03-15T15:18:18.931Z",
+    "status": "assigned",
+    "claimedAt": "2026-03-15T15:20:34.413Z",
     "claimedBy": "eu_mod_1"
   },
   {
