@@ -8,9 +8,9 @@ export default function handler(
   req: Record<string, any>,
   res: any,
 ) {
-  const { user_id, region } = req.body;
+  const { userId, region } = req.body;
 
-  if (!user_id) {
+  if (!userId) {
     return clientError(res, 'User ID query parameter is required');
   }
   if (!region) {
@@ -23,7 +23,7 @@ export default function handler(
     }
 
     const users: User[] = JSON.parse(data);
-    const user = users.find((u: User) => u.userId === user_id && u.region === region);
+    const user = users.find((u: User) => u.userId === userId && u.region === region);
 
     if (!user) {
       return unauthorizedResponse(res, 'User not found in specified region');

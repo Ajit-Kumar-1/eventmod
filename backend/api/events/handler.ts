@@ -7,9 +7,9 @@ export default function handler(
   req: Record<string, any>,
   res: any,
 ) {
-  const { user_id } = req.query;
+  const { userId } = req.query;
 
-  if (!user_id) {
+  if (!userId) {
     return clientError(res, 'User ID query parameter is required');
   }
 
@@ -19,7 +19,7 @@ export default function handler(
     }
 
     const users: User[] = JSON.parse(data);
-    const user = users.find((u: User) => u.userId === user_id);
+    const user = users.find((u: User) => u.userId === userId);
 
     if (!user) {
       return unauthorizedResponse(res, 'User not found');
@@ -36,7 +36,7 @@ export default function handler(
       const filteredEvents: Event[] = events
         .filter((e: Event) => e.region === region
           && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, user_id))
+            || (e.status === Status.CLAIMED && !claimedBySomeoneElse(e, userId))
           ));
       return res.json(filteredEvents);
     });

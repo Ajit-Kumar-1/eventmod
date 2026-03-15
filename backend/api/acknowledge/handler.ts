@@ -7,12 +7,12 @@ export default function handler(
   req: Record<string, any>,
   res: any,
 ) {
-  const { user_id, event_id } = req.body;
+  const { userId, eventId } = req.body;
 
-  if (!event_id) {
+  if (!eventId) {
     return clientError(res, 'Event ID query parameter is required');
   }
-  if (!user_id) {
+  if (!userId) {
     return clientError(res, 'User ID query parameter is required');
   }
 
@@ -22,7 +22,7 @@ export default function handler(
     }
 
     const users: User[] = JSON.parse(userData);
-    const user: User | undefined = users.find((u: any) => u.user_id === user_id);
+    const user: User | undefined = users.find((u: any) => u.userId === userId);
 
     if (!user) {
       return unauthorizedResponse(res, 'User not found');
@@ -35,15 +35,15 @@ export default function handler(
       }
       const events: Event[] = JSON.parse(eventData);
       const event: Event | undefined = events.find((e: Event) => e.region === region
-        && e.eventId === event_id && e.status === Status.CLAIMED
-        && claimedByMe(e, user_id));
+        && e.eventId === eventId && e.status === Status.CLAIMED
+        && claimedByMe(e, userId));
 
       if (!event) {
         return clientError(res, 'No valid event found with specified id');
       }
 
       event.claimedAt = new Date();
-      event.claimedBy = user_id;
+      event.claimedBy = userId;
       event.status = Status.ASSIGNED;
       fs.writeFile('./data/events.json', JSON.stringify(events, null, 2), (err) => {
         if (err) {
