@@ -15,7 +15,7 @@ export default function handler(
     }
 
     const users: User[] = JSON.parse(data);
-    const user = users.find((u: User) => u.user_id === user_id && u.region === region);
+    const user = users.find((u: User) => u.userId === user_id && u.region === region);
 
     res.header("Access-Control-Allow-Origin", '*');
     if (user) {

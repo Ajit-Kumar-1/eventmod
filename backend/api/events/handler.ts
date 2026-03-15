@@ -18,7 +18,7 @@ export default function handler(
     }
 
     const users: User[] = JSON.parse(data);
-    const user = users.find((u: User) => u.user_id === user_id);
+    const user = users.find((u: User) => u.userId === user_id);
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
