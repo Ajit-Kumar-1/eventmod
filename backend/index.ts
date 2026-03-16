@@ -10,7 +10,8 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(corsMiddleware, checkUserIdParam);
+app.use(checkUserIdParam);
+app.use(corsMiddleware);
 
 Routes.forEach((route: Route) => app[route.method](route.path, route.handler));
 
