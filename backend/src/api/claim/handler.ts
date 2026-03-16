@@ -11,9 +11,6 @@ export default async function handler(
   if (!eventId) {
     return clientError(res, 'Event ID query parameter is required');
   }
-  if (!userId) {
-    return clientError(res, 'User ID query parameter is required');
-  }
 
   try {
     const { rows: users } = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);

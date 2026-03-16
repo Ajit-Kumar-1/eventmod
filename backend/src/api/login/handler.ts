@@ -6,10 +6,6 @@ export default async function handler(
   res: any,
 ) {
   const { userId, region } = req.body;
-
-  if (!userId) {
-    return clientError(res, 'User ID query parameter is required');
-  }
   if (!region) {
     return clientError(res, 'Region query parameter is required');
   }

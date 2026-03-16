@@ -3,14 +3,14 @@ import Routes from './src/api/index.ts';
 import cron from 'node-cron';
 import type { Route } from './src/Types.ts';
 import resetExpired from './src/cron/ResetExpiredHandler.ts';
-import corsMiddleware from './src/api/Middleware.ts';
+import { corsMiddleware, checkUserIdParam } from './src/api/Middleware.ts';
 import pool from './src/db.ts';
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(corsMiddleware);
+app.use(corsMiddleware, checkUserIdParam);
 
 Routes.forEach((route: Route) => app[route.method](route.path, route.handler));
 

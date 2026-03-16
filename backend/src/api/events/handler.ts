@@ -8,10 +8,6 @@ export default async function handler(
 ) {
   const { userId } = req.query;
 
-  if (!userId) {
-    return clientError(res, 'User ID query parameter is required');
-  }
-
   try {
     const { rows: users } = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
 
