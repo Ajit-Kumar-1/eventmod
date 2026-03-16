@@ -1,10 +1,7 @@
-import fs from 'fs';
-import type { User } from '../../Types.ts';
-import { clientError, serverError, successResponse, unauthorizedResponse } from '../CommonResponses.ts';
+import { clientError, successResponse, unauthorizedResponse } from '../CommonResponses.ts';
+import pool from '../../db.ts';
 
-const usersFilePath = './data/users.json';
-
-export default function handler(
+export default async function handler(
   req: Record<string, any>,
   res: any,
 ) {
@@ -17,18 +14,10 @@ export default function handler(
     return clientError(res, 'Region query parameter is required');
   }
 
-  fs.readFile(usersFilePath, 'utf8', (err, data) => {
-    if (err) {
-      return serverError(res, 'Failed to load users data');
-    }
+  const { rows } = await pool.query('SELECT 1 FROM users WHERE user_id = $1 AND region = $2', [userId, region]);
+  if (rows.length === 0) {
+    return unauthorizedResponse(res, 'User not found in specified region');
+  }
 
-    const users: User[] = JSON.parse(data);
-    const user = users.find((u: User) => u.userId === userId && u.region === region);
-
-    if (!user) {
-      return unauthorizedResponse(res, 'User not found in specified region');
-    }
-
-    return successResponse(res, 'Login successful');
-  });
+  return successResponse(res, 'Login successful');
 }

@@ -1,9 +1,8 @@
-import fs from 'fs';
-import { Status, type Event, type User } from '../../Types.ts';
-import { claimedByMe, claimValid } from '../../Utils.ts';
-import { clientError, serverError, unauthorizedResponse } from '../CommonResponses.ts';
+import { Region, Status, type User } from '../../Types.ts';
+import { clientError, unauthorizedResponse } from '../CommonResponses.ts';
+import pool from '../../db.ts';
 
-export default function handler(
+export default async function handler(
   req: Record<string, any>,
   res: any,
 ) {
@@ -17,45 +16,30 @@ export default function handler(
     return clientError(res, 'Status query parameter is required');
   }
 
-  fs.readFile('./data/users.json', 'utf8', (err, data) => {
-    if (err) {
-      return serverError(res, 'Failed to load users data');
-    }
+  const { rows: users } = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
 
-    const users: User[] = JSON.parse(data);
-    const user = users.find((u: User) => u.userId === userId);
+  if (users.length === 0) {
+    return unauthorizedResponse(res);
+  }
 
-    if (!user) {
-      return unauthorizedResponse(res, 'User not found');
-    }
+  const user: User = users[0];
+  const region: Region = user.region;
 
-    const region: string = user.region;
+  if (status === Status.OPEN) {
+    const { rows } = await pool.query('SELECT * FROM events WHERE region = $1 AND (status = $2 OR (status = $3 AND NOT claimed_at > now() - interval \'15 minutes\'))', [region, Status.OPEN, Status.CLAIMED]);
+    return res.json(rows);
+  }
 
-    fs.readFile('./data/events.json', 'utf8', (err, data) => {
-      if (err) {
-        return serverError(res, 'Failed to load events data');
-      }
+  if (status === Status.CLAIMED) {
+    const { rows } = await pool.query('SELECT * FROM events WHERE region = $1 AND status = $2 AND claimed_by = $3 AND claimed_at > now() - interval \'15 minutes\'', [region, Status.CLAIMED, userId]);
+    return res.json(rows);
+  }
 
-      let events: Event[] = JSON.parse(data);
+  if (status === Status.ASSIGNED) {
+    const { rows } = await pool.query('SELECT * FROM events WHERE region = $1 AND status = $2 AND claimed_by = $3', [region, Status.ASSIGNED, userId]);
+    return res.json(rows);
+  }
 
-      if (status === Status.OPEN) {
-        return res.json(events.filter((e: Event) => e.region === region
-          && (e.status === Status.OPEN
-            || (e.status === Status.CLAIMED && !claimValid(e)))));
-      }
-
-      if (status === Status.CLAIMED) {
-        return res.json(events.filter((e: Event) => e.region === region
-          && e.status === Status.CLAIMED && claimedByMe(e, userId)));
-      }
-
-      if (status === Status.ASSIGNED) {
-        return res.json(events.filter((e: Event) => e.region === region
-          && e.status === Status.ASSIGNED && e.claimedBy === userId));
-      }
-
-      return clientError(res, 'Invalid status query parameter');
-    });
-  });
+  return clientError(res, 'Invalid status query parameter');
 
 }

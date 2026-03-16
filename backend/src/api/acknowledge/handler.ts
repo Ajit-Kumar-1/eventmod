@@ -1,9 +1,8 @@
-import fs from 'fs';
-import { Region, Status, type Event, type User } from '../../Types.ts';
-import { claimedByMe } from '../../Utils.ts';
-import { clientError, serverError, successResponse, unauthorizedResponse } from '../CommonResponses.ts';
+import { Region, Status, type User } from '../../Types.ts';
+import { clientError, successResponse, unauthorizedResponse } from '../CommonResponses.ts';
+import pool from '../../db.ts';
 
-export default function handler(
+export default async function handler(
   req: Record<string, any>,
   res: any,
 ) {
@@ -16,41 +15,22 @@ export default function handler(
     return clientError(res, 'User ID query parameter is required');
   }
 
-  fs.readFile('./data/users.json', 'utf8', (err, userData) => {
-    if (err) {
-      return serverError(res, 'Failed to load users data');
-    }
+  const { rows: users } = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
 
-    const users: User[] = JSON.parse(userData);
-    const user: User | undefined = users.find((u: any) => u.userId === userId);
+  if (users.length === 0) {
+    return unauthorizedResponse(res);
+  }
 
-    if (!user) {
-      return unauthorizedResponse(res, 'User not found');
-    }
+  const user: User = users[0];
+  const region: Region = user.region;
 
-    const region: Region = user.region;
-    fs.readFile('./data/events.json', 'utf8', (err, eventData) => {
-      if (err) {
-        return serverError(res, 'Failed to load events data');
-      }
-      const events: Event[] = JSON.parse(eventData);
-      const event: Event | undefined = events.find((e: Event) => e.region === region
-        && e.eventId === eventId && e.status === Status.CLAIMED
-        && claimedByMe(e, userId));
+  const { rows: events } = await pool.query('SELECT 1 FROM events WHERE region = $1 AND event_id = $2 AND status = $3 AND claimed_by = $4 AND claimed_at > now() - interval \'15 minutes\'', [region, eventId, Status.CLAIMED, userId]);
 
-      if (!event) {
-        return clientError(res, 'No valid event found with specified id');
-      }
+  if (events.length === 0) {
+    return clientError(res, 'Event not found or cannot be assigned');
+  }
 
-      event.claimedAt = new Date();
-      event.claimedBy = userId;
-      event.status = Status.ASSIGNED;
-      fs.writeFile('./data/events.json', JSON.stringify(events, null, 2), (err) => {
-        if (err) {
-          return serverError(res, 'Failed to update event data');
-        }
-        return successResponse(res, 'Event assigned successfully');
-      });
-    });
-  });
+  await pool.query('UPDATE events SET status = $1 WHERE event_id = $2', [Status.ASSIGNED, eventId]);
+
+  return successResponse(res, 'Event assigned successfully');
 }
