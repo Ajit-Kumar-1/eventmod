@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from 'express';
-import { clientError } from './CommonResponses.ts';
 
 export default function middleware(
   req: Request,
