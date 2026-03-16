@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import './App.css'
 import login from './requests/Login.ts';
-import { getOpenEvents } from './requests/GetEvents.ts';
-import Login from './components/Login.tsx';
+import getOpenEvents from './requests/GetEvents.ts';
+import LoginForm from './components/LoginForm.tsx';
+import claim from './requests/Claim.ts';
 
 type EventItem = {
   eventId: string;
@@ -34,6 +35,10 @@ function App() {
     });
   };
 
+  const claimEvent = (eventId: string) => {
+    claim({ eventId, userId }).then(fetchEvents);
+  };
+
   return loggedIn ? <section id="center">
     <div>
       <button
@@ -42,65 +47,87 @@ function App() {
       >
         Fetch events
       </button>
-      {openEvents.length > 0 ? (
-        <>
-          <h3>Available Events</h3>
-          <table className="events-table">
-            <thead>
-              <tr>
-                <th>Event ID</th>
-                <th>Region</th>
-                <th>Status</th>
-                <th>Actions</th>
+      <>
+        <h3>Available Events</h3>
+        <table className="events-table">
+          <thead>
+            <tr>
+              <th>Event ID</th>
+              <th>Region</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {openEvents.map((event) => (
+              <tr key={event.eventId}>
+                <td>{event.eventId}</td>
+                <td>{event.region}</td>
+                <td>
+                  <button
+                    className="row-action"
+                    type="button"
+                    onClick={() => claimEvent(event.eventId)}
+                  >
+                    {'Claim'}
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {openEvents.map((event) => (
-                <tr key={event.eventId}>
+            ))}
+          </tbody>
+        </table>
+
+        <h3>Claimed Events</h3>
+        <table className="events-table">
+          <thead>
+            <tr>
+              <th>Event ID</th>
+              <th>Region</th>
+              <th>Claimed At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {claimedEvents.length > 0 ? (
+              claimedEvents.map((event) => (
+                <tr key={`claimed-${event.eventId}`}>
                   <td>{event.eventId}</td>
                   <td>{event.region}</td>
-                  <td>{event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}</td>
-                  <td>
-                    <button className="row-action" type="button">
-                      {event.status === 'open' && 'Claim'}
-                    </button>
-                  </td>
+                  <td>{event.claimedAt}</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <h3>Assigned Events</h3>
-          <table className="events-table">
-            <thead>
+              ))
+            ) : (
               <tr>
-                <th>Event ID</th>
-                <th>Region</th>
-                <th>Claimed At</th>
+                <td colSpan={3}>No claimed events yet.</td>
               </tr>
-            </thead>
-            <tbody>
-              {assignedEvents.length > 0 ? (
-                assignedEvents.map((event) => (
-                  <tr key={`assigned-${event.eventId}`}>
-                    <td>{event.eventId}</td>
-                    <td>{event.region}</td>
-                    <td>{event.claimedAt}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={3}>No assigned events yet.</td>
+            )}
+          </tbody>
+        </table>
+
+        <h3>Assigned Events</h3>
+        <table className="events-table">
+          <thead>
+            <tr>
+              <th>Event ID</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody>
+            {assignedEvents.length > 0 ? (
+              assignedEvents.map((event) => (
+                <tr key={`assigned-${event.eventId}`}>
+                  <td>{event.eventId}</td>
+                  <td>{event.region}</td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
-      ) : (
-        <p>No events loaded yet.</p>
-      )}
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3}>No assigned events yet.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </>
     </div>
-  </section> : <Login
+  </section> : <LoginForm
     {...{ userId, setUserId, region, setRegion, handleSubmit }}
   />
 }
