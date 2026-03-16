@@ -1,16 +1,21 @@
+import type { Request, Response } from 'express';
 import { Region, Status, type User } from '../../Types.ts';
-import { serverError, unauthorizedResponse } from '../CommonResponses.ts';
+import { clientError, serverError, unauthorizedResponse } from '../CommonResponses.ts';
 import pool from '../../db.ts';
 import eventsResponse from './response-map.ts';
 
 export default async function handler(
-  req: Record<string, any>,
-  res: any,
+  req: Request,
+  res: Response,
 ) {
   const { userId } = req.query;
 
+  if (!userId || typeof userId !== 'string') {
+    return clientError(res, 'User ID query parameter is required');
+  }
+
   try {
-    const { rows: users } = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
+    const { rows: users } = await pool.query('SELECT region FROM users WHERE user_id = $1', [userId]);
 
     if (users.length === 0) {
       return unauthorizedResponse(res);

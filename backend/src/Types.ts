@@ -1,3 +1,5 @@
+import type { Request, Response } from 'express';
+
 export const Region = {
   ASIA: 'asia',
   EUROPE: 'eu',
@@ -36,8 +38,13 @@ export const HTTPMethod = {
 
 export type HTTPMethod = typeof HTTPMethod[keyof typeof HTTPMethod];
 
+export type RouteHandler = (
+  req: Request,
+  res: Response,
+) => void | Promise<void>;
+
 export type Route = {
   method: HTTPMethod;
   path: string;
-  handler: (req: Record<string, any>, res: any) => void;
+  handler: RouteHandler;
 }

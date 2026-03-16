@@ -1,13 +1,24 @@
+import type { Request, Response } from 'express';
+import { Region } from '../../Types.ts';
 import { clientError, serverError, successResponse, unauthorizedResponse } from '../CommonResponses.ts';
 import pool from '../../db.ts';
 
 export default async function handler(
-  req: Record<string, any>,
-  res: any,
+  req: Request,
+  res: Response,
 ) {
   const { userId, region } = req.body;
-  if (!region) {
-    return clientError(res, 'Region query parameter is required');
+
+  if (!userId || typeof userId !== 'string') {
+    return clientError(res, 'User ID body parameter is required');
+  }
+
+  if (!region || typeof region !== 'string') {
+    return clientError(res, 'Region body parameter is required');
+  }
+
+  if (!Object.values(Region).includes(region as Region)) {
+    return clientError(res, 'Region is invalid');
   }
 
   try {
