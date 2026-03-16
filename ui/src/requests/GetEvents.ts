@@ -1,4 +1,7 @@
+import type { EventsResponse } from '../Types.ts';
+import { requestJson } from './client.ts';
+
 export default function getOpenEvents(userId: string) {
-  return fetch(`http://localhost:3000/events?userId=${userId}`)
-    .then(response => response.json());
+  const query = new URLSearchParams({ userId });
+  return requestJson<EventsResponse>(`/events?${query.toString()}`);
 }

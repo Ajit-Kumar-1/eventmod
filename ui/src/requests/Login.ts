@@ -1,9 +1,15 @@
+import { requestJson } from './client.ts';
+
+type LoginResponse = {
+  message?: string;
+}
+
 export default function login(userId: string, region: string) {
-  return fetch('http://localhost:3000/login', {
+  return requestJson<LoginResponse>('/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ userId, region })
-  }).then(response => response.json())
+  })
 };

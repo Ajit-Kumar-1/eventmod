@@ -3,10 +3,13 @@ import type { EventItem } from '../Types.ts';
 type ClaimedEventsTableProps = {
   events: EventItem[];
   onAssign: (eventId: string) => void;
+  isLoading: boolean;
 }
 
 export default function ClaimedEventsTable({
-  events, onAssign,
+  events,
+  onAssign,
+  isLoading,
 }: ClaimedEventsTableProps) {
   return <>
     <h3>Claimed Events</h3>
@@ -30,6 +33,7 @@ export default function ClaimedEventsTable({
                 <button
                   className="row-action"
                   type="button"
+                  disabled={isLoading}
                   onClick={() => onAssign(event.eventId)}
                 >
                   Assign

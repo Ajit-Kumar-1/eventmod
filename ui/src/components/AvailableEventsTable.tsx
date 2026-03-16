@@ -3,11 +3,13 @@ import type { EventItem } from '../Types.ts';
 type AvailableEventsTableProps = {
   events: EventItem[];
   onClaim: (eventId: string) => void;
+  isLoading: boolean;
 }
 
 export default function AvailableEventsTable({
   events,
   onClaim,
+  isLoading,
 }: AvailableEventsTableProps) {
   return <>
     <h3>Available Events</h3>
@@ -29,6 +31,7 @@ export default function AvailableEventsTable({
                 <button
                   className="row-action"
                   type="button"
+                  disabled={isLoading}
                   onClick={() => onClaim(event.eventId)}
                 >
                   Claim

@@ -29,8 +29,14 @@ export type User = {
 
 export type EventItem = {
   eventId: string;
-  region: string;
-  status: string;
+  region: Region;
+  status: Status;
   claimedBy: string | null;
   claimedAt: string | null;
+}
+
+export type EventsResponse = {
+  open: EventItem[];
+  claimed: EventItem[];
+  assigned: EventItem[];
 }

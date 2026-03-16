@@ -6,10 +6,18 @@ interface LoginParams {
   setUserId: Dispatch<SetStateAction<string>>;
   setRegion: Dispatch<SetStateAction<string>>;
   handleSubmit: () => void;
+  loading: boolean;
+  canSubmit: boolean;
 }
 
 export default function Login({
-  userId, region, setUserId, setRegion, handleSubmit,
+  userId,
+  region,
+  setUserId,
+  setRegion,
+  handleSubmit,
+  loading,
+  canSubmit,
 }: LoginParams) {
   return <section id="center">
     <div>
@@ -23,6 +31,7 @@ export default function Login({
         <input
           id="user_id"
           type="text"
+          disabled={loading}
           value={userId}
           onChange={(event) => setUserId(event.target.value)}
           placeholder="Enter moderator ID"
@@ -34,6 +43,7 @@ export default function Login({
         <input
           id="region"
           type="text"
+          disabled={loading}
           value={region}
           onChange={(event) => setRegion(event.target.value)}
           placeholder="Enter region"
@@ -44,8 +54,9 @@ export default function Login({
     <button
       className="counter"
       onClick={handleSubmit}
+      disabled={loading || !canSubmit}
     >
-      Submit
+      {loading ? 'Submitting...' : 'Submit'}
     </button>
   </section>;
 }
