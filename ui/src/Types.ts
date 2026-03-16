@@ -26,3 +26,11 @@ export type User = {
   userId: string;
   region: Region;
 }
+
+export type EventItem = {
+  eventId: string;
+  region: string;
+  status: string;
+  claimedBy: string | null;
+  claimedAt: string | null;
+}
