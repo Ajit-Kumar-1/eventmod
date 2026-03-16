@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm.tsx';
 import AvailableEventsTable from './components/AvailableEventsTable.tsx';
 import ClaimedEventsTable from './components/ClaimedEventsTable.tsx';
 import AssignedEventsTable from './components/AssignedEventsTable.tsx';
+import LoadingOverlay from './components/LoadingOverlay.tsx';
 import claim from './requests/Claim.ts';
 import type { EventItem } from './Types.ts';
 import acknowledge from './requests/Acknowledge.ts';
@@ -17,31 +18,37 @@ function App() {
   const [openEvents, setOpenEvents] = useState<EventItem[]>([]);
   const [claimedEvents, setClaimedEvents] = useState<EventItem[]>([]);
   const [assignedEvents, setAssignedEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit: () => void = () => {
+    setLoading(true);
     login(userId, region).then(() => {
       setLoggedIn(true);
-    });
+      fetchEvents();
+    }).finally(() => setLoading(false));
   };
 
   const fetchEvents: () => void = () => {
+    setLoading(true);
     getOpenEvents(userId).then((response) => {
       setOpenEvents(Array.isArray(response?.open) ? response.open : []);
       setClaimedEvents(Array.isArray(response?.claimed) ? response.claimed : []);
       setAssignedEvents(Array.isArray(response?.assigned) ? response.assigned : [])
-    });
+    }).finally(() => setLoading(false));
   };
 
   const claimEvent = (eventId: string): void => {
-    claim({ eventId, userId }).then(fetchEvents);
+    setLoading(true);
+    claim({ eventId, userId }).then(fetchEvents).finally(() => setLoading(false));
   };
 
   const assignEvent = (eventId: string): void => {
-    acknowledge({ eventId, userId }).then(fetchEvents);
+    setLoading(true);
+    acknowledge({ eventId, userId }).then(fetchEvents).finally(() => setLoading(false));
   };
 
-  return loggedIn ? <section id="center">
-    <div>
+  return <>
+    {loggedIn ? <section id="center">
       <button
         className="counter"
         onClick={fetchEvents}
@@ -51,10 +58,12 @@ function App() {
       <AvailableEventsTable events={openEvents} onClaim={claimEvent} />
       <ClaimedEventsTable events={claimedEvents} onAssign={assignEvent} />
       <AssignedEventsTable events={assignedEvents} />
-    </div>
-  </section> : <LoginForm
-    {...{ userId, setUserId, region, setRegion, handleSubmit }}
-  />
+    </section> : <LoginForm
+      {...{ userId, setUserId, region, setRegion, handleSubmit }}
+    />}
+
+    {loading && <LoadingOverlay />}
+  </>
 }
 
 export default App
