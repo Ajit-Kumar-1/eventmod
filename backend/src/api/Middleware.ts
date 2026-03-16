@@ -1,12 +1,13 @@
 import type { Request, Response, NextFunction } from 'express';
 import { clientError } from './CommonResponses.ts';
 
-export function corsMiddleware(req: Request, res: Response, next: NextFunction): void {
+export default function middleware(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   res.header("Access-Control-Allow-Origin", "*");
-  next();
-}
-
-export function checkUserIdParam(req: Request, res: Response, next: NextFunction): void {
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   const { userId } = req.query;
 
   if (!userId) {
@@ -15,4 +16,4 @@ export function checkUserIdParam(req: Request, res: Response, next: NextFunction
   }
 
   next();
-};
+}

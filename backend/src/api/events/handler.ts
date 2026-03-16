@@ -1,6 +1,7 @@
 import { Region, Status, type User } from '../../Types.ts';
-import { clientError, serverError, unauthorizedResponse } from '../CommonResponses.ts';
+import { serverError, unauthorizedResponse } from '../CommonResponses.ts';
 import pool from '../../db.ts';
+import eventsResponse from './response-map.ts';
 
 export default async function handler(
   req: Record<string, any>,
@@ -18,13 +19,13 @@ export default async function handler(
     const user: User = users[0];
     const region: Region = user.region;
 
-    const { rows: open } = await pool.query('SELECT * FROM events WHERE region = $1 AND (status = $2 OR (status = $3 AND NOT claimed_at > now() - interval \'15 minutes\'))', [region, Status.OPEN, Status.CLAIMED]);
+    const { rows: open } = await pool.query('SELECT event_id, region FROM events WHERE region = $1 AND (status = $2 OR (status = $3 AND NOT claimed_at > now() - interval \'15 minutes\'))', [region, Status.OPEN, Status.CLAIMED]);
 
-    const { rows: claimed } = await pool.query('SELECT * FROM events WHERE region = $1 AND status = $2 AND claimed_by = $3 AND claimed_at > now() - interval \'15 minutes\'', [region, Status.CLAIMED, userId]);
+    const { rows: claimed } = await pool.query('SELECT event_id, region, claimed_at FROM events WHERE region = $1 AND status = $2 AND claimed_by = $3 AND claimed_at > now() - interval \'15 minutes\'', [region, Status.CLAIMED, userId]);
 
-    const { rows: assigned } = await pool.query('SELECT * FROM events WHERE region = $1 AND status = $2 AND claimed_by = $3', [region, Status.ASSIGNED, userId]);
+    const { rows: assigned } = await pool.query('SELECT event_id, region FROM events WHERE region = $1 AND status = $2 AND claimed_by = $3', [region, Status.ASSIGNED, userId]);
 
-    return res.json({ open, claimed, assigned });
+    return res.json(eventsResponse(open, claimed, assigned));
   } catch {
     return serverError(res, 'Failed to load events data');
   }
