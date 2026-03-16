@@ -93,23 +93,46 @@
   cursor: pointer;
 }
 
-.error-message {
+.notification-stack {
   position: fixed;
   top: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(92vw, 520px);
+}
+
+.notification {
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
   padding: 10px 14px;
   border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  animation: notification-enter 180ms ease-out;
+}
+
+.notification.is-closing {
+  pointer-events: none;
+  animation: notification-exit 180ms ease-in forwards;
+}
+
+.notification-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-message {
   border: 1px solid #d93f49;
   background: #ffe4e6;
   color: #7a1720;
-  font-size: 14px;
-  font-weight: 600;
 }
 
 .error-retry {
@@ -124,19 +147,20 @@
 }
 
 .success-message {
-  position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1001;
-  margin: 0;
-  padding: 10px 14px;
-  border-radius: 8px;
   border: 1px solid #237a4b;
   background: #e8fff1;
   color: #0d5130;
-  font-size: 14px;
+}
+
+.notification-dismiss {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text-h);
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
 }
 
 .loading-overlay {
@@ -177,5 +201,38 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes notification-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes notification-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
+
+  .notification,
+  .notification.is-closing {
+    animation: none;
   }
 }

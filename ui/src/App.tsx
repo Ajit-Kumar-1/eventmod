@@ -3,10 +3,9 @@ import './App.css'
 import login from './requests/Login.ts';
 import getOpenEvents from './requests/GetEvents.ts';
 import LoginForm from './components/LoginForm.tsx';
-import AvailableEventsTable from './components/AvailableEventsTable.tsx';
-import ClaimedEventsTable from './components/ClaimedEventsTable.tsx';
-import AssignedEventsTable from './components/AssignedEventsTable.tsx';
+import EventsDashboard from './components/EventsDashboard.tsx';
 import LoadingOverlay from './components/LoadingOverlay.tsx';
+import NotificationStack from './components/NotificationStack.tsx';
 import claim from './requests/Claim.ts';
 import type { EventItem } from './Types.ts';
 import acknowledge from './requests/Acknowledge.ts';
@@ -22,6 +21,8 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string>('');
+  const [isErrorClosing, setIsErrorClosing] = useState<boolean>(false);
+  const [isSuccessClosing, setIsSuccessClosing] = useState<boolean>(false);
   const [lastAction, setLastAction] = useState<
     | { type: 'login' }
     | { type: 'fetch' }
@@ -46,6 +47,7 @@ function App() {
     try {
       await task();
     } catch (error) {
+      setIsErrorClosing(false);
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
@@ -56,10 +58,27 @@ function App() {
     }
   };
 
-  const showSuccess = (message: string): void => {
-    setSuccessMessage(message);
+  const dismissError = (): void => {
+    setIsErrorClosing(true);
+    window.setTimeout(() => {
+      setErrorMessage('');
+      setIsErrorClosing(false);
+    }, 180);
+  };
+
+  const dismissSuccess = (): void => {
+    setIsSuccessClosing(true);
     window.setTimeout(() => {
       setSuccessMessage('');
+      setIsSuccessClosing(false);
+    }, 180);
+  };
+
+  const showSuccess = (message: string): void => {
+    setIsSuccessClosing(false);
+    setSuccessMessage(message);
+    window.setTimeout(() => {
+      dismissSuccess();
     }, 2500);
   };
 
@@ -139,48 +158,28 @@ function App() {
   };
 
   return <>
-    {loggedIn ? <section id="center">
-      <button
-        className="counter"
-        onClick={fetchEventsAction}
-        disabled={loading}
-      >
-        Fetch events
-      </button>
-      <AvailableEventsTable
-        events={openEvents}
-        onClaim={claimEvent}
-        isLoading={loading}
-      />
-      <ClaimedEventsTable
-        events={claimedEvents}
-        onAssign={assignEvent}
-        isLoading={loading}
-      />
-      <AssignedEventsTable events={assignedEvents} />
-    </section> : <LoginForm
+    {loggedIn ? <EventsDashboard
+      loading={loading}
+      openEvents={openEvents}
+      claimedEvents={claimedEvents}
+      assignedEvents={assignedEvents}
+      onFetchEvents={fetchEventsAction}
+      onClaimEvent={claimEvent}
+      onAssignEvent={assignEvent}
+    /> : <LoginForm
       {...{ userId, setUserId, region, setRegion, handleSubmit, loading, canSubmit }}
     />}
 
-    {errorMessage && (
-      <div className="error-message" role="alert">
-        <span>{errorMessage}</span>
-        <button
-          className="error-retry"
-          type="button"
-          onClick={retryLastAction}
-          disabled={loading}
-        >
-          Retry
-        </button>
-      </div>
-    )}
-
-    {successMessage && (
-      <p className="success-message" role="status" aria-live="polite">
-        {successMessage}
-      </p>
-    )}
+    <NotificationStack
+      errorMessage={errorMessage}
+      successMessage={successMessage}
+      isErrorClosing={isErrorClosing}
+      isSuccessClosing={isSuccessClosing}
+      loading={loading}
+      onRetry={retryLastAction}
+      onDismissError={dismissError}
+      onDismissSuccess={dismissSuccess}
+    />
 
     {loading && <LoadingOverlay />}
   </>
