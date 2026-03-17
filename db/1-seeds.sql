@@ -15,25 +15,25 @@ insert into
         claimed_by,
         claimed_at
     )
-values (1, 'eu', 'open', null, null),
+values ('evt_1', 'eu', 'open', null, null),
     (
-        2,
+        'evt_2',
         'eu',
         'claimed',
         'eu_mod_1',
         '2024-01-01 10:00:00'
     ),
-    (3, 'us', 'open', null, null),
+    ('evt_3', 'us', 'open', null, null),
     (
-        4,
+        'evt_4',
         'us',
         'claimed',
         'us_mod_2',
         '2024-01-02 11:00:00'
     ),
-    (5, 'asia', 'open', null, null),
+    ('evt_5', 'asia', 'open', null, null),
     (
-        6,
+        'evt_6',
         'asia',
         'claimed',
         'asia_mod_1',

@@ -145,7 +145,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/claim')
-      .send({ userId: 'mod-1', eventId: 'abc' });
+      .send({ userId: 'mod-1' });
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -160,7 +160,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/claim')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(401);
     expect(response.body).toEqual({ message: 'Request unauthorized' });
@@ -175,7 +175,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/claim')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -192,7 +192,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/claim')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: 'Event claimed successfully' });
@@ -205,7 +205,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/claim')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(500);
     expect(response.body).toEqual({ error: 'Failed to update event data' });
@@ -215,7 +215,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/acknowledge')
-      .send({ userId: 'mod-1', eventId: 'abc' });
+      .send({ userId: 'mod-1' });
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -230,7 +230,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/acknowledge')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(401);
     expect(response.body).toEqual({ message: 'Request unauthorized' });
@@ -245,7 +245,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/acknowledge')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -262,7 +262,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/acknowledge')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: 'Event assigned successfully' });
@@ -275,7 +275,7 @@ describe('api routes integration', () => {
     const app = createApp();
     const response = await request(app)
       .put('/acknowledge')
-      .send({ userId: 'mod-1', eventId: 42 });
+      .send({ userId: 'mod-1', eventId: 'evt-42' });
 
     expect(response.status).toBe(500);
     expect(response.body).toEqual({ error: 'Failed to update event data' });

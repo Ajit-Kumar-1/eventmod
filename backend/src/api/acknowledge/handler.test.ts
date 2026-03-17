@@ -30,7 +30,7 @@ describe('acknowledge handler', () => {
   });
 
   it('returns 400 for missing userId', async () => {
-    const req = { body: { eventId: 42 } };
+    const req = { body: { eventId: 'evt-42' } };
     const res = createResponse();
 
     await handler(req as any, res as any);
@@ -42,8 +42,8 @@ describe('acknowledge handler', () => {
     expect(mockedPool.query).not.toHaveBeenCalled();
   });
 
-  it('returns 400 for non-integer eventId', async () => {
-    const req = { body: { userId: 'mod-1', eventId: 'abc' } };
+  it('returns 400 for missing eventId', async () => {
+    const req = { body: { userId: 'mod-1' } };
     const res = createResponse();
 
     await handler(req as any, res as any);
@@ -58,7 +58,7 @@ describe('acknowledge handler', () => {
   it('returns 401 when user is not found', async () => {
     mockedPool.query.mockResolvedValueOnce({ rows: [] });
 
-    const req = { body: { userId: 'mod-1', eventId: 42 } };
+    const req = { body: { userId: 'mod-1', eventId: 'evt-42' } };
     const res = createResponse();
 
     await handler(req as any, res as any);
@@ -72,7 +72,7 @@ describe('acknowledge handler', () => {
     mockedPool.query.mockResolvedValueOnce({ rows: [{ region: 'asia' }] });
     mockedPool.query.mockResolvedValueOnce({ rowCount: 0 });
 
-    const req = { body: { userId: 'mod-1', eventId: 42 } };
+    const req = { body: { userId: 'mod-1', eventId: 'evt-42' } };
     const res = createResponse();
 
     await handler(req as any, res as any);
@@ -93,7 +93,7 @@ describe('acknowledge handler', () => {
     mockedPool.query.mockResolvedValueOnce({ rows: [{ region: 'asia' }] });
     mockedPool.query.mockResolvedValueOnce({ rowCount: 1 });
 
-    const req = { body: { userId: 'mod-1', eventId: 42 } };
+    const req = { body: { userId: 'mod-1', eventId: 'evt-42' } };
     const res = createResponse();
 
     await handler(req as any, res as any);
@@ -108,7 +108,7 @@ describe('acknowledge handler', () => {
   it('returns 500 when database throws', async () => {
     mockedPool.query.mockRejectedValueOnce(new Error('db failed'));
 
-    const req = { body: { userId: 'mod-1', eventId: 42 } };
+    const req = { body: { userId: 'mod-1', eventId: 'evt-42' } };
     const res = createResponse();
 
     await handler(req as any, res as any);
