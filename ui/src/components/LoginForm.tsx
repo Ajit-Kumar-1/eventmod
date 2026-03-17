@@ -27,7 +27,7 @@ export default function Login({
 
     <div className="input-grid">
       <label className="input-field" htmlFor="user_id">
-        <span>user_id</span>
+        <span>Moderator ID</span>
         <input
           id="user_id"
           type="text"
