@@ -13,8 +13,7 @@ export default async function handler(
     return clientError(res, 'User ID body parameter is required');
   }
 
-  const parsedEventId = Number(eventId);
-  if (!Number.isInteger(parsedEventId)) {
+  if (!eventId || typeof eventId !== 'string') {
     return clientError(res, 'Event ID body parameter is required');
   }
 
@@ -35,16 +34,15 @@ export default async function handler(
          AND region = $4
          AND (
            status = $5
-           OR (status = $6 AND claimed_at <= now() - interval '15 minutes')
+           OR (status = $1 AND claimed_at < now() - interval '15 minutes')
          )
        RETURNING 1`,
       [
         Status.CLAIMED,
         userId,
-        parsedEventId,
+        eventId,
         region,
         Status.OPEN,
-        Status.CLAIMED,
       ],
     );
 

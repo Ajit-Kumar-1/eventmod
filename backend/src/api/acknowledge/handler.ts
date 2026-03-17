@@ -13,8 +13,7 @@ export default async function handler(
     return clientError(res, 'User ID body parameter is required');
   }
 
-  const parsedEventId = Number(eventId);
-  if (!Number.isInteger(parsedEventId)) {
+  if (!eventId || typeof eventId !== 'string') {
     return clientError(res, 'Event ID body parameter is required');
   }
 
@@ -37,7 +36,7 @@ export default async function handler(
          AND claimed_by = $5
          AND claimed_at > now() - interval '15 minutes'
        RETURNING 1`,
-      [Status.ASSIGNED, parsedEventId, region, Status.CLAIMED, userId],
+      [Status.ASSIGNED, eventId, region, Status.CLAIMED, userId],
     );
 
     if (acknowledgeResult.rowCount === 0) {
