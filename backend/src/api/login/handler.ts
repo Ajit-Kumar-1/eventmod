@@ -3,11 +3,17 @@ import { Region } from '../../Types.ts';
 import { clientError, serverError, successResponse, unauthorizedResponse } from '../CommonResponses.ts';
 import pool from '../../db.ts';
 
+const cache: Record<string, Record<string, boolean>> = {};
+
 export default async function handler(
   req: Request,
   res: Response,
 ) {
   const { userId, region } = req.body;
+
+  if (cache[userId]?.[region]) {
+    return successResponse(res, 'Login successful (cached)');
+  }
 
   if (!userId || typeof userId !== 'string') {
     return clientError(res, 'User ID body parameter is required');
@@ -26,6 +32,9 @@ export default async function handler(
     if (rows.length === 0) {
       return unauthorizedResponse(res, 'User not found in specified region');
     }
+
+    cache[userId] = cache[userId] || {};
+    cache[userId][region] = true;
 
     return successResponse(res, 'Login successful');
   } catch {
