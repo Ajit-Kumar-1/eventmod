@@ -1,8 +1,20 @@
-Setup instructions:
- - Run the following command to start the Docker container containing the backend, the frontend and the database servers
- docker-compose up
- - Open the front end on a browser by navigating to localhost:5173
+# EventMod
 
- Event ingestion:
-  - On initializing the database, a handful of sample events are generated
-  - The backend includes a cron job that adds a new event to the database every minute
+## Setup Instructions
+
+- Run the following command to start the Docker containers for backend, frontend, and database:
+
+```bash
+docker-compose up
+```
+
+- Open the frontend in your browser at:
+
+```text
+http://localhost:5173
+```
+
+## Event Ingestion
+
+- During database initialization, a set of sample events is generated.
+- The backend includes a cron job that adds a new event every minute.
