@@ -61,3 +61,9 @@ http://localhost:5173
 - Background jobs, for expiring events, logging metrics and adding events to database
 - Integration tests added for each route
 - Simple in-memory caching of successful login credentials
+
+## Future proposals for improvement
+
+- Add an endpoint to relinquish claimed events, instead of waiting 15 minutes for expiry
+- Per-user limits for claims and assignments
+- Sort events by time of creation / claim / assignment
