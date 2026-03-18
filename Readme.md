@@ -19,7 +19,7 @@ http://localhost:5173
 ## Event Ingestion
 
 - Local SQL database used to store events and user data
-- During database initialization, a set of sample events is generated.
+- During database initialization, a table is created to store events, and a set of sample events is inserted.
 - The backend includes a cron job that adds a new event every minute.
 
 ## APIs
