@@ -1,8 +1,10 @@
 # Event Moderation Platform
 
+- Backend (Node.js application), frontend (React application) and the database (local PostgreSQL instance) are containerized in a single Docker container
+
 ## Setup Instructions
 
-- Backend (Node.js application), frontend (React application) and the database (local PostgreSQL instance) are containerized in a single Docker container.
+- Start the Docker daemon on your computer
 - Run the following command to start the Docker container:
 
 ```bash
@@ -11,6 +13,8 @@ docker-compose up
 
 - Open the frontend in your browser at:
 http://localhost:5173
+- Login by providing a valid pair of moderator ID and region
+(e.g. `eu_mod_1`, `eu`)
 
 ## Event Ingestion
 
