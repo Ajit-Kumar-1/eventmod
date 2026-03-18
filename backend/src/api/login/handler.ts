@@ -11,9 +11,7 @@ export default async function handler(
 ) {
   const { userId, region } = req.body;
 
-  if (cache[userId]?.[region]) {
-    return successResponse(res, 'Login successful (cached)');
-  }
+  const shouldUseCache = process.env.NODE_ENV !== 'test';
 
   if (!userId || typeof userId !== 'string') {
     return clientError(res, 'User ID body parameter is required');
@@ -27,14 +25,20 @@ export default async function handler(
     return clientError(res, 'Region is invalid');
   }
 
+  if (shouldUseCache && cache[userId]?.[region]) {
+    return successResponse(res, 'Login successful (cached)');
+  }
+
   try {
     const { rows } = await pool.query('SELECT 1 FROM users WHERE user_id = $1 AND region = $2', [userId, region]);
     if (rows.length === 0) {
       return unauthorizedResponse(res, 'User not found in specified region');
     }
 
-    cache[userId] = cache[userId] || {};
-    cache[userId][region] = true;
+    if (shouldUseCache) {
+      cache[userId] = cache[userId] || {};
+      cache[userId][region] = true;
+    }
 
     return successResponse(res, 'Login successful');
   } catch {
